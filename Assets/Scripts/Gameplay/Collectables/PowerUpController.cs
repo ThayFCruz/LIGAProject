@@ -9,5 +9,6 @@ public class PowerUpController : CollidableObjects
     protected override void OnPlayerEnter()
     {
         GameManager.Instance.ActivatePowerUp(type);
+        Disable();
     }
 }
