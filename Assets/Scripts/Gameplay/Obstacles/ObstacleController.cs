@@ -13,7 +13,11 @@ public class ObstacleController : CollidableObjects
 
     protected override void OnPlayerEnter()
     {
-        if(GameManager.Instance.IsInvincible) return;
+        if (GameManager.Instance.IsInvincible)
+        {
+            Disable();
+            return;
+        }
         
         GameManager.Instance.TakeDamage();
     }

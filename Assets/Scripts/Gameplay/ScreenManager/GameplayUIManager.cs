@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -28,6 +29,7 @@ public class GameplayUIManager : MonoBehaviour
     [SerializeField] private Image powerUpImage;
     [SerializeField] private Sprite[] powerUpSprites;
     
+    Tweener _tweener;
     private void Start()
     {
         GameManager.OnGetInvinciblePowerUp += (status) => ActivatePowerUp(status, GameManager.PowerUpType.INVINCIBLE);
@@ -90,6 +92,11 @@ public class GameplayUIManager : MonoBehaviour
     private void ActivatePowerUp(bool status, GameManager.PowerUpType type)
     {
         powerUpImage.sprite = powerUpSprites[(int)type];
+        if(status)
+            _tweener = powerUpImage.DOFade(0.5f, 0.2f).SetLoops(-1, LoopType.Yoyo);
+        else
+            _tweener.Kill();
+        
         powerUpImage.gameObject.SetActive(status);
     }
 }

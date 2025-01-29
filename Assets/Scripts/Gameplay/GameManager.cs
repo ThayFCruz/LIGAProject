@@ -2,28 +2,30 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class GameManager : Singleton<GameManager>
 {
+    
+    [SerializeField] GameplayUIManager _uiManager;
+    private float _powerUpTime;
+    [Range (0, 3)]
+    [SerializeField] private int _maxHealth;
+    [SerializeField] private float _levelMaxDistance;
+    
+    private float _powerUpCooldown;
+
+    private bool _activatePowerUp;
+    
+    private bool _isInvincible = false;
+    public bool IsInvincible => _isInvincible;
+    
+    private bool _isPlaying = false;
+    public bool IsPlaying => _isPlaying;
+    
     public static event Action<bool> OnGetSmallPowerUp;
     public static event Action<bool> OnGetInvinciblePowerUp;
     public static event Action OnTakeDamage;
-    
-    [SerializeField] GameplayUIManager uiManager;
-
-    private bool isInvincible = false;
-    public bool IsInvincible => isInvincible;
-    
-    private bool isPlaying = false;
-    public bool IsPlaying => isPlaying;
-
-    [SerializeField] private float powerUpTime;
-    [Range (0, 3)]
-    [SerializeField] private int maxHealth;
-    [SerializeField] private float levelMaxDistance;
-    private float powerUpCooldown;
-
-    private bool activatePowerUp;
     public enum PowerUpType
     {
         INVINCIBLE,
@@ -32,20 +34,25 @@ public class GameManager : Singleton<GameManager>
 
     private void Start()
     {
-        uiManager.Init(maxHealth, levelMaxDistance);
-        isPlaying = true;
+        _uiManager.Init(_maxHealth, _levelMaxDistance);
+        Invoke(nameof(StartMatch), 2f);
+    }
+
+    private void StartMatch()
+    {
+        _isPlaying = true;
     }
 
     private void Update()
     {
-        if(isPlaying && activatePowerUp) {
-            powerUpCooldown -= Time.deltaTime;
-            if (powerUpCooldown <= 0)
+        if(_isPlaying && _activatePowerUp) {
+            _powerUpCooldown -= Time.deltaTime;
+            if (_powerUpCooldown <= 0)
             {
-                activatePowerUp = false;
-                if (isInvincible)
+                _activatePowerUp = false;
+                if (_isInvincible)
                 {
-                    isInvincible = false;
+                    _isInvincible = false;
                     OnGetInvinciblePowerUp?.Invoke(false);
                 }
                 else
@@ -56,27 +63,27 @@ public class GameManager : Singleton<GameManager>
             
         }
     }
-    public void ActivatePowerUp(PowerUpType type)
+    public void ActivatePowerUp(PowerUpType type, float cooldown)
     {
-        activatePowerUp = true;
+        _activatePowerUp = true;
         if (type == PowerUpType.INVINCIBLE)
         {
-            isInvincible = true;
+            _isInvincible = true;
             OnGetInvinciblePowerUp?.Invoke(true);
         }
         else
             OnGetSmallPowerUp?.Invoke(true);
-        powerUpCooldown = powerUpTime;
+        _powerUpCooldown = cooldown;
     }
     
     public void TakeDamage()
     {
-        if (isInvincible) return;
+        if (_isInvincible) return;
             OnTakeDamage?.Invoke();
     }
 
     public void GameOver()
     {
-        isPlaying = false;
+        _isPlaying = false;
     }
 }

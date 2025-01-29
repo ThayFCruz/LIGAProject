@@ -9,11 +9,13 @@ public class PlayerController : MonoBehaviour
 {
     public static float PosX;
     public static float PosY;
-    public static Transform PlayerTransform;
+    private static Transform PlayerTransform;
     private Rigidbody2D _playerRb;
     private static float _initialPoint;
     
-    private SpriteRenderer _spriteRenderer;
+    [SerializeField] private SpriteRenderer _spriteRenderer;
+    [SerializeField] private Animator _animator;
+    
     
     public float _regularSpeed = 5f;
     public float _speedMultiplier = 2f;
@@ -34,7 +36,7 @@ public class PlayerController : MonoBehaviour
         GameManager.OnTakeDamage += OnTakeDamage;
         GameManager.OnGetInvinciblePowerUp += OnGetInvinciblePowerUp;
         _playerRb = GetComponent<Rigidbody2D>();
-        _spriteRenderer = GetComponent<SpriteRenderer>();
+        _playerRb.velocity = new Vector2(0, 0);
         _initialPoint = transform.position.x;
     }
     
@@ -47,11 +49,10 @@ public class PlayerController : MonoBehaviour
     {
         if (!GameManager.Instance.IsPlaying) return;
         _playerRb.velocity = new Vector2(_currentSpeed, _playerRb.velocity.y);
+        _animator.SetFloat("speed", _playerRb.velocity.x); 
         var position = transform.position;
         PosX = position.x;
         PosY = position.y;
-        
-        
     }
 
     private void OnGetInvinciblePowerUp(bool isInvincible)
@@ -70,7 +71,7 @@ public class PlayerController : MonoBehaviour
         {
             PlayerTransform.DOScale(_regularSize, 0.5f);
             _spriteRenderer.DOFade(1, 0.05f);
-            _currentSpeed = _regularSpeed / _speedMultiplier;
+            _currentSpeed = _regularSpeed;
             _tweenerInvincible.Kill();
             _playerRb.mass = 0.6f;
         }
@@ -79,18 +80,21 @@ public class PlayerController : MonoBehaviour
     private void OnTakeDamage()
     {
         //damage animation
+        _animator.SetTrigger("Crash");
     }
 
     public void OnJump()
     {
         //jump animation
         _playerRb.AddForce(Vector2.up * _jumpForce, ForceMode2D.Force);
+        _animator.SetTrigger("jump");
     }
 
     public void GameOver()
     {
         //dead animation
         _tweenerInvincible.Kill();
+        _animator.SetTrigger("Dead");
         _playerRb.velocity = new Vector2(0, 0);
     }
 }
