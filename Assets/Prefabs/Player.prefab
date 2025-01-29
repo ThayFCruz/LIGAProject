@@ -156,10 +156,10 @@ MonoBehaviour:
   _spriteRenderer: {fileID: 1204480479118323669}
   _animator: {fileID: 2229534301109084089}
   _regularSpeed: 5
-  _speedMultiplier: 1.5
+  _speedMultiplier: 0.8
   _currentSpeed: 5
   _jumpForce: 400
-  _bigSize: 1.2
+  _bigSize: 1.6
   _regularSize: 0.6
 --- !u!50 &4019390489198184428
 Rigidbody2D:

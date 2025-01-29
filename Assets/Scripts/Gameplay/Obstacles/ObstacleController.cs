@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 
 public class ObstacleController : CollidableObjects
@@ -24,6 +25,6 @@ public class ObstacleController : CollidableObjects
 
     private void SmallPowerUp(bool status)
     {
-        transform.localScale = status? smallScale : defaultScale;
+        transform.DOScale(status ? smallScale : defaultScale, 0.1f);
     }
 }

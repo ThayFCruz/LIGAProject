@@ -1180,6 +1180,7 @@ RectTransform:
   - {fileID: 778069669}
   - {fileID: 1937656749}
   - {fileID: 12837973}
+  - {fileID: 1661589916}
   m_Father: {fileID: 1514048616}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
@@ -1199,16 +1200,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0af882c1c811d6a418b9103149fcbc47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fullHeartSprite: {fileID: 21300000, guid: 107a9bd1205fdbe449b5b339bf96b8d4, type: 3}
-  emptyHeartSprite: {fileID: 21300000, guid: cfdc3a6e6ee63ef448ccb5140f57d2e6, type: 3}
-  hearts:
+  _fullHeartSprite: {fileID: 21300000, guid: 107a9bd1205fdbe449b5b339bf96b8d4, type: 3}
+  _emptyHeartSprite: {fileID: 21300000, guid: cfdc3a6e6ee63ef448ccb5140f57d2e6, type: 3}
+  _hearts:
   - {fileID: 9672576}
   - {fileID: 1372820575}
   - {fileID: 1501207303}
-  filledDistanceImage: {fileID: 850260366}
-  distanceText: {fileID: 579924447}
-  powerUpImage: {fileID: 996675776}
-  powerUpSprites:
+  _deadAnimation: {fileID: 1661589917}
+  _filledDistanceImage: {fileID: 850260366}
+  _distanceText: {fileID: 579924447}
+  _powerUpImage: {fileID: 996675776}
+  _powerUpSprites:
   - {fileID: 21300000, guid: 89f01e9c4f4ba9c4b8a5649fe8b8f57a, type: 3}
   - {fileID: 21300000, guid: 7ae08857186afb04b81af93cb502595a, type: 3}
 --- !u!1 &843187134
@@ -1225,7 +1227,7 @@ GameObject:
   - component: {fileID: 843187138}
   m_Layer: 0
   m_Name: Ground
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1557,7 +1559,7 @@ MonoBehaviour:
       m_Calls: []
   m_Sprite: {fileID: 21300000, guid: 89f01e9c4f4ba9c4b8a5649fe8b8f57a, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -2297,8 +2299,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _uiManager: {fileID: 780334560}
-  _maxHealth: 3
-  _levelMaxDistance: 300
+  _maxHealth: 2
+  _levelMaxDistance: 100
 --- !u!4 &1578640650
 Transform:
   m_ObjectHideFlags: 0
@@ -2314,6 +2316,103 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1661589915
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1661589916}
+  - component: {fileID: 1661589919}
+  - component: {fileID: 1661589918}
+  - component: {fileID: 1661589917}
+  m_Layer: 5
+  m_Name: Crash
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &1661589916
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1661589915}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 780334559}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: -325}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!95 &1661589917
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1661589915}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: f3f225a42c7eeae4da4f7c9f918820de, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1661589918
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1661589915}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: ac7fb2fbe40207f418cfd399bc153b05, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1661589919
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1661589915}
+  m_CullTransparentMesh: 1
 --- !u!1 &1785103719
 GameObject:
   m_ObjectHideFlags: 0
@@ -2658,7 +2757,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bccffb12e35d498448639625124b7d55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parallaxEffectMultiplier: 0.5
+  parallaxEffectMultiplier: 0.7
 --- !u!1 &2008467655 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5229974040516576751, guid: 7d652b7d7f59a824990fce419a7abebc, type: 3}
@@ -2846,7 +2945,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3225090410021748260, guid: 2f3e746b1db2bea47b740f280a6abfb6, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 2.26
       objectReference: {fileID: 0}
     - target: {fileID: 3225090410021748260, guid: 2f3e746b1db2bea47b740f280a6abfb6, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2907,7 +3006,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7426850548362249225, guid: af220925454566543b31b0c18fda5f6e, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -3.82
+      value: -2.16
       objectReference: {fileID: 0}
     - target: {fileID: 7426850548362249225, guid: af220925454566543b31b0c18fda5f6e, type: 3}
       propertyPath: m_LocalPosition.y

@@ -22,10 +22,12 @@ public class GameManager : Singleton<GameManager>
     
     private bool _isPlaying = false;
     public bool IsPlaying => _isPlaying;
+
+    private int _currentHealth;
     
     public static event Action<bool> OnGetSmallPowerUp;
     public static event Action<bool> OnGetInvinciblePowerUp;
-    public static event Action OnTakeDamage;
+    public static event Action<int> OnTakeDamage;
     public enum PowerUpType
     {
         INVINCIBLE,
@@ -35,6 +37,7 @@ public class GameManager : Singleton<GameManager>
     private void Start()
     {
         _uiManager.Init(_maxHealth, _levelMaxDistance);
+        _currentHealth = _maxHealth;
         Invoke(nameof(StartMatch), 2f);
     }
 
@@ -62,6 +65,16 @@ public class GameManager : Singleton<GameManager>
             }
             
         }
+
+        if (_isPlaying)
+        {
+             float distance = PlayerController.GetDistanceFromStart();
+            _uiManager.UpdateDistance(distance);
+            if (distance >= _levelMaxDistance)
+            {
+                GameOver();
+            }
+        }
     }
     public void ActivatePowerUp(PowerUpType type, float cooldown)
     {
@@ -79,7 +92,10 @@ public class GameManager : Singleton<GameManager>
     public void TakeDamage()
     {
         if (_isInvincible) return;
-            OnTakeDamage?.Invoke();
+        _currentHealth--;
+        OnTakeDamage?.Invoke(_currentHealth);
+        if(_currentHealth <= 0)
+            GameOver();
     }
 
     public void GameOver()

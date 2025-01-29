@@ -23,6 +23,8 @@ public class PlayerController : MonoBehaviour
     public float _jumpForce = 400f;
     public float _bigSize = 1.5f;
     public float _regularSize = 0.6f;
+
+    private bool _onGround;
     
     Tweener _tweenerInvincible;
     private void Awake()
@@ -37,6 +39,7 @@ public class PlayerController : MonoBehaviour
         GameManager.OnGetInvinciblePowerUp += OnGetInvinciblePowerUp;
         _playerRb = GetComponent<Rigidbody2D>();
         _playerRb.velocity = new Vector2(0, 0);
+        _currentSpeed = _regularSpeed;
         _initialPoint = transform.position.x;
     }
     
@@ -47,7 +50,11 @@ public class PlayerController : MonoBehaviour
     
     public void FixedUpdate()
     {
-        if (!GameManager.Instance.IsPlaying) return;
+        if (!GameManager.Instance.IsPlaying)
+        {
+            _animator.SetFloat("speed", 0); 
+            return;
+        }
         _playerRb.velocity = new Vector2(_currentSpeed, _playerRb.velocity.y);
         _animator.SetFloat("speed", _playerRb.velocity.x); 
         var position = transform.position;
@@ -61,7 +68,7 @@ public class PlayerController : MonoBehaviour
         {
             PlayerTransform.DOScale(_bigSize, 0.5f).OnComplete(() =>
             {
-                _tweenerInvincible = _spriteRenderer.DOFade(0, 0.05f).SetLoops(-1, LoopType.Yoyo);
+                _tweenerInvincible = _spriteRenderer.DOFade(0.7f, 0.1f).SetLoops(-1, LoopType.Yoyo);
             });
             _currentSpeed = _regularSpeed * _speedMultiplier;
             _playerRb.mass = 2f;
@@ -70,21 +77,30 @@ public class PlayerController : MonoBehaviour
         else
         {
             PlayerTransform.DOScale(_regularSize, 0.5f);
-            _spriteRenderer.DOFade(1, 0.05f);
+            _spriteRenderer.DOFade(1, 0.5f);
             _currentSpeed = _regularSpeed;
             _tweenerInvincible.Kill();
             _playerRb.mass = 0.6f;
         }
+        _animator.SetBool("invincible", isInvincible);
     }
 
-    private void OnTakeDamage()
+    private void OnTakeDamage(int life)
     {
         //damage animation
-        _animator.SetTrigger("Crash");
+        if (life > 0)
+        {
+            _animator.SetTrigger("Crash");
+        }
+        else
+        {
+            GameOver();
+        }
     }
 
     public void OnJump()
     {
+        if (!_onGround) return;
         //jump animation
         _playerRb.AddForce(Vector2.up * _jumpForce, ForceMode2D.Force);
         _animator.SetTrigger("jump");
@@ -96,5 +112,21 @@ public class PlayerController : MonoBehaviour
         _tweenerInvincible.Kill();
         _animator.SetTrigger("Dead");
         _playerRb.velocity = new Vector2(0, 0);
+    }
+
+    private void OnCollisionStay2D(Collision2D col)
+    {
+        if (col.gameObject.CompareTag("Ground"))
+        {
+            _onGround = true;
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D other)
+    {
+        if (other.gameObject.CompareTag("Ground"))
+        {
+            _onGround = false;
+        }
     }
 }

@@ -10,32 +10,33 @@ using UnityEngine.UI;
 public class GameplayUIManager : MonoBehaviour
 {
     [Header("Health Elements")]
-    private int maxHealth;
-    private int currentHealth;
-    [SerializeField] private Sprite fullHeartSprite;
-    [SerializeField] private Sprite emptyHeartSprite;
-    [SerializeField] private Image[] hearts;
+    private int _maxHealth;
+    [SerializeField] private Sprite _fullHeartSprite;
+    [SerializeField] private Sprite _emptyHeartSprite;
+    [SerializeField] private Image[] _hearts;
+    [SerializeField] private Animator _deadAnimation;
     
     [Space(10)]
     [Header("Distance elements")]
-    private float maxDistance;
-    private float currentDistance;
-    private bool hasMaxDistance;
-    [SerializeField] private Image filledDistanceImage;
-    [SerializeField] private TextMeshProUGUI distanceText;
+    private float _maxDistance;
+    private float _currentDistance;
+    private bool _hasMaxDistance;
+    [SerializeField] private Image _filledDistanceImage;
+    [SerializeField] private TextMeshProUGUI _distanceText;
     
     [Space(10)]
     [Header("PowerUps elements")]
-    [SerializeField] private Image powerUpImage;
-    [SerializeField] private Sprite[] powerUpSprites;
+    [SerializeField] private Image _powerUpImage;
+    [SerializeField] private Sprite[] _powerUpSprites;
+    
     
     Tweener _tweener;
     private void Start()
     {
         GameManager.OnGetInvinciblePowerUp += (status) => ActivatePowerUp(status, GameManager.PowerUpType.INVINCIBLE);
         GameManager.OnGetSmallPowerUp += (status) => ActivatePowerUp(status, GameManager.PowerUpType.SMALL_OBSTACLES);
-        GameManager.OnTakeDamage += TakeDamage;
-        powerUpImage.gameObject.SetActive(false);
+        GameManager.OnTakeDamage += SetHeartSprite;
+        _powerUpImage.gameObject.SetActive(false);
     }
 
     private void FixedUpdate()
@@ -45,59 +46,48 @@ public class GameplayUIManager : MonoBehaviour
 
     public void Init(int levelMaxHealth, float levelMaxDistance, bool levelHasMaxDistance = true)
     {
-        maxHealth = levelMaxHealth;
-        maxDistance = levelMaxDistance;
-        hasMaxDistance = levelHasMaxDistance;
-        SetHeartSprite(maxHealth);
-        filledDistanceImage.gameObject.SetActive(hasMaxDistance);
-        filledDistanceImage.fillAmount = 0;
+        _maxHealth = levelMaxHealth;
+        _maxDistance = levelMaxDistance;
+        _hasMaxDistance = levelHasMaxDistance;
+        SetHeartSprite(_maxHealth);
+        _filledDistanceImage.gameObject.SetActive(_hasMaxDistance);
+        _filledDistanceImage.fillAmount = 0;
     }
 
-    private void SetHeartSprite(int health)
+    public void SetHeartSprite(int health)
     {
-        currentHealth = health;
-        for (int i = 0; i< hearts.Length; i++) 
+        for (int i = 0; i< _hearts.Length; i++) 
         {
-            hearts[i].gameObject.SetActive(maxHealth > i);
-            hearts[i].sprite = currentHealth  > i ? fullHeartSprite : emptyHeartSprite;
+            _hearts[i].gameObject.SetActive(_maxHealth > i);
+            _hearts[i].sprite = health  > i ? _fullHeartSprite : _emptyHeartSprite;
         }
-    }
-    
-    private void TakeDamage()
-    {
-        if (GameManager.Instance.IsInvincible) return;
-        //crash animation
-        SetHeartSprite(currentHealth - 1); 
-        if (currentHealth <= 0)
+
+        if (health <= 0)
         {
-            GameManager.Instance.GameOver();
+            _deadAnimation.gameObject.SetActive(true);
+            _deadAnimation.Play("crash");
         }
     }
 
-    private void UpdateDistance(float distance)
+    public void UpdateDistance(float distance)
     {
-        distanceText.text = distance + " km";
+        _distanceText.text = distance/20 + " km";
         
-        if (!hasMaxDistance) return;
+        if (!_hasMaxDistance) return;
 
-        float fill = distance / maxDistance;
-        filledDistanceImage.fillAmount = fill;
-
-        if (fill >= 1)
-        {
-            GameManager.Instance.GameOver();
-        }
+        float fill = distance / _maxDistance;
+        _filledDistanceImage.fillAmount = fill;
     }
 
     private void ActivatePowerUp(bool status, GameManager.PowerUpType type)
     {
-        powerUpImage.sprite = powerUpSprites[(int)type];
+        _powerUpImage.sprite = _powerUpSprites[(int)type];
         if(status)
-            _tweener = powerUpImage.DOFade(0.5f, 0.2f).SetLoops(-1, LoopType.Yoyo);
+            _tweener = _powerUpImage.DOFade(0.5f, 0.2f).SetLoops(-1, LoopType.Yoyo);
         else
             _tweener.Kill();
         
-        powerUpImage.gameObject.SetActive(status);
+        _powerUpImage.gameObject.SetActive(status);
     }
 }
 
