@@ -21,6 +21,8 @@ public class PlayerController : MonoBehaviour
 	
     public void Start()
     {
+        GameManager.OnTakeDamage += OnTakeDamage;
+        GameManager.OnGetInvinciblePowerUp += OnGetInvinciblePowerUp;
         _playerRb = GetComponent<Rigidbody2D>();
         initialPoint = transform.position.x;
     }
@@ -32,14 +34,31 @@ public class PlayerController : MonoBehaviour
     
     public void FixedUpdate()
     {
+        if (!GameManager.Instance.IsPlaying) return;
         _playerRb.velocity = new Vector2(baseSpeed, _playerRb.velocity.y);
         var position = transform.position;
         PosX = position.x;
         PosY = position.y;
     }
 
+    private void OnGetInvinciblePowerUp(bool isInvincible)
+    {
+        PlayerTransform.localScale = isInvincible? new Vector3(1.4f, 1.4f, 1.4f): new Vector3(0.6f, 0.6f, 0.6f);
+    }
+
+    private void OnTakeDamage()
+    {
+        //damage animation
+    }
+
+    private void OnJump()
+    {
+        //jump animation
+    }
+
     public void GameOver()
     {
+        //dead animation
         _playerRb.velocity = new Vector2(0, 0);
     }
 }
