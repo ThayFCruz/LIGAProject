@@ -98,8 +98,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b44785df2e207e4b9cab74b547a222b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spaceAfter: 0.5
-  obstacleType: 1
+  _spaceAfter: 0
+  _obstacleType: 1
   _powerUpType: 0
   _cooldown: 4
 --- !u!58 &4497695350719729006

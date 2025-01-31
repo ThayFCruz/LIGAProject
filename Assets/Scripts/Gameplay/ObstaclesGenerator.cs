@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 public class ObstaclesGenerator : MonoBehaviour
@@ -11,21 +12,14 @@ public class ObstaclesGenerator : MonoBehaviour
     Queue<CollidableObjects> _objectsQueue = new Queue<CollidableObjects>();
     List<CollidableObjects> _pool = new List<CollidableObjects>();
     
-    [SerializeField] private List<InformationsByType> typeInformations;
-    [Space] 
-        
-    [SerializeField] private float startPosition;
-
-    [Space]
-    [Header("DistanceBased")] 
-        
-    [SerializeField] private float distanceToSpawn = 2;
-    [SerializeField] private float distanceToDeactivate = 20;
+    [SerializeField] private List<InformationsByType> _typeInformations;
+    
+    [SerializeField] private float _startPosition;
+    [SerializeField] private float _distanceToSpawn = 2;
+    [SerializeField] private float _distanceToDeactivate = 20;
 
     private Dictionary<TypeCollidableObject, InformationsByType> typeDictionary =
         new Dictionary<TypeCollidableObject, InformationsByType>();
-    
-    PoolObjects pool;
     
     private float[] _weights;
     private TypeCollidableObject _nextToSpawnType;
@@ -54,16 +48,16 @@ public class ObstaclesGenerator : MonoBehaviour
 
     private void Start()
     {
-        foreach (var info in typeInformations)
+        foreach (var info in _typeInformations)
         {
             typeDictionary.Add(info.type, info);
         }
         if (Camera.main != null) _cameraTr = Camera.main.transform;
-        _nextToSpawnPosition = startPosition;
+        _nextToSpawnPosition = _startPosition;
 
         _nextToSpawnType = TypeCollidableObject.OBSTACLE;
         var lastBlock = typeDictionary[TypeCollidableObject.OBSTACLE].prefabs[0];
-        _oldestPos =  lastBlock.SpaceAfter + startPosition;
+        _oldestPos =  lastBlock.SpaceAfter + _startPosition;
         powerUpsCount = 0;
         _spawning = true;
     }
@@ -122,12 +116,12 @@ public class ObstaclesGenerator : MonoBehaviour
 	        
         float cameraX = _cameraTr.position.x;
 
-        if (cameraX > _oldestPos && cameraX - _oldestPos > distanceToDeactivate)
+        if (cameraX > _oldestPos && cameraX - _oldestPos > _distanceToDeactivate)
         {
             DeactivateOldestObject();
         }
                 
-        if(Mathf.Abs(_nextToSpawnPosition - cameraX) <= distanceToSpawn)
+        if(Mathf.Abs(_nextToSpawnPosition - cameraX) <= _distanceToSpawn)
             SpawnObject();
     }
 }

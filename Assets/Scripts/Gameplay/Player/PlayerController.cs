@@ -9,8 +9,6 @@ using UnityEngine.UI;
 public class PlayerController : MonoBehaviour
 {
     public static float PosX;
-    public static float PosY;
-    private static Transform PlayerTransform;
     private Rigidbody2D _playerRb;
     private static float _initialPoint;
     
@@ -26,7 +24,6 @@ public class PlayerController : MonoBehaviour
     Tweener _tweenerInvincible;
     private void Awake()
     {
-        PlayerTransform = transform;
         PosX = 0;
     }
 	
@@ -56,14 +53,13 @@ public class PlayerController : MonoBehaviour
         _animator.SetFloat("speed", _playerRb.velocity.x); 
         var position = transform.position;
         PosX = position.x;
-        PosY = position.y;
     }
 
     private void OnGetInvinciblePowerUp(bool isInvincible)
     {
         if (isInvincible)
         {
-            PlayerTransform.DOScale(_bigSize, 0.5f).OnComplete(() =>
+            transform.DOScale(_bigSize, 0.5f).OnComplete(() =>
             {
                 _tweenerInvincible = _spriteRenderer.DOFade(0.7f, 0.1f).SetLoops(-1, LoopType.Yoyo);
             });
@@ -73,7 +69,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            PlayerTransform.DOScale(_regularSize, 0.1f);
+            transform.DOScale(_regularSize, 0.1f);
             _spriteRenderer.DOFade(1, 0.5f);
           //  _currentSpeed = _regularSpeed;
             _tweenerInvincible.Kill();

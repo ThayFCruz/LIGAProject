@@ -98,8 +98,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02d63cadc142368409f86e7e16435e47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spaceAfter: 2
-  obstacleType: 0
+  _spaceAfter: 2
+  _obstacleType: 0
   smallScale: {x: 1, y: 1}
   defaultScale: {x: 2.5, y: 2.5}
 --- !u!60 &1907172095719482837
