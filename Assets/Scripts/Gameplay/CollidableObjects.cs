@@ -4,11 +4,9 @@ using UnityEngine;
 
 public abstract class CollidableObjects : MonoBehaviour
 {
-    [SerializeField] private float size;
     [SerializeField] private float spaceAfter;
     [SerializeField] private ObstaclesGenerator.TypeCollidableObject obstacleType;
     
-    public float Size => size;
     public float SpaceAfter => spaceAfter;
     
     public float Position { get; private set; }

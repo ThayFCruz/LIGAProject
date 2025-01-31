@@ -15,7 +15,7 @@ public class ObstaclesGenerator : MonoBehaviour
     [Space] 
         
     [SerializeField] private float startPosition;
-    // [SerializeField] private float spaceBetween;
+    [SerializeField] private float spaceBetween;
 
     [Space]
     [Header("DistanceBased")] 
@@ -34,6 +34,8 @@ public class ObstaclesGenerator : MonoBehaviour
     private float _oldestPos;
     private bool _spawning;
     private Transform _cameraTr;
+
+    private int powerUpsCount;
     
     
     [Serializable]
@@ -62,8 +64,8 @@ public class ObstaclesGenerator : MonoBehaviour
 
         _nextToSpawnType = TypeCollidableObject.OBSTACLE;
         var lastBlock = typeDictionary[TypeCollidableObject.OBSTACLE].prefabs[0];
-        _oldestPos = lastBlock.Size + lastBlock.SpaceAfter + startPosition;
-        Debug.Log("oldest pos: " + _oldestPos);
+        _oldestPos =  lastBlock.SpaceAfter + startPosition;
+        powerUpsCount = 0;
         _spawning = true;
     }
     
@@ -74,8 +76,10 @@ public class ObstaclesGenerator : MonoBehaviour
         CollidableObjects obj = GetNextObject();
         obj.Set(_nextToSpawnPosition);
         _objectsQueue.Enqueue(obj);
-       
-        _nextToSpawnPosition += obj.Size + obj.SpaceAfter +  typeDictionary[_nextToSpawnType].spaceBefore;
+        if (obj.TypeCO == TypeCollidableObject.POWER_UP)
+            powerUpsCount++;
+        float newSpaceBetween = Random.Range(0, spaceBetween);
+        _nextToSpawnPosition += obj.SpaceAfter +  newSpaceBetween + typeDictionary[_nextToSpawnType].spaceBefore;
 
     }
 
@@ -89,9 +93,17 @@ public class ObstaclesGenerator : MonoBehaviour
             obj = Instantiate(typeDictionary[_nextToSpawnType].prefabs[index], typeDictionary[_nextToSpawnType].container);
             _pool.Add(obj);
         }
+
+        if (powerUpsCount <= 0)
+        {
+            float nextTypeChance = Random.Range(0, 1f);
+            _nextToSpawnType = nextTypeChance < 0.97f ? TypeCollidableObject.OBSTACLE : TypeCollidableObject.POWER_UP;
+        }
+        else
+        {
+            _nextToSpawnType = TypeCollidableObject.OBSTACLE;
+        }
         
-        float nextTypeChance = Random.Range(0, 1f);
-        _nextToSpawnType = nextTypeChance < 0.95f ? TypeCollidableObject.OBSTACLE : TypeCollidableObject.POWER_UP;
         return obj;
     }
         
@@ -99,9 +111,10 @@ public class ObstaclesGenerator : MonoBehaviour
     {
         CollidableObjects obstacle =  _objectsQueue.Dequeue();
         obstacle.Disable();
-
+        if(obstacle.TypeCO == TypeCollidableObject.POWER_UP)
+            powerUpsCount--;
         CollidableObjects lastBlock = _objectsQueue.Peek();
-        _oldestPos = (lastBlock).Position + lastBlock.Size + lastBlock.SpaceAfter;
+        _oldestPos = (lastBlock).Position + lastBlock.SpaceAfter;
     }
         
     void Update()
