@@ -9,6 +9,8 @@ using UnityEngine.UI;
 
 public class GameplayUIManager : MonoBehaviour
 {
+    
+    [SerializeField] private LevelClearScreen _levelClearScreen;
     [Header("Health Elements")]
     private int _maxHealth;
     [SerializeField] private Sprite _fullHeartSprite;
@@ -29,6 +31,8 @@ public class GameplayUIManager : MonoBehaviour
     [SerializeField] private Image _powerUpImage;
     [SerializeField] private Sprite[] _powerUpSprites;
     
+    private int _powerUpCount;
+    
     
     Tweener _tweener;
     private void Start()
@@ -36,6 +40,7 @@ public class GameplayUIManager : MonoBehaviour
         GameManager.OnGetInvinciblePowerUp += (status) => ActivatePowerUp(status, GameManager.PowerUpType.INVINCIBLE);
         GameManager.OnGetSmallPowerUp += (status) => ActivatePowerUp(status, GameManager.PowerUpType.SMALL_OBSTACLES);
         GameManager.OnTakeDamage += SetHeartSprite;
+        GameManager.OnFinishLevel += ShowLevelClear;
         _powerUpImage.gameObject.SetActive(false);
     }
 
@@ -44,11 +49,11 @@ public class GameplayUIManager : MonoBehaviour
         UpdateDistance(PlayerController.GetDistanceFromStart());
     }
 
-    public void Init(int levelMaxHealth, float levelMaxDistance, bool levelHasMaxDistance = true)
+    public void Init()
     {
-        _maxHealth = levelMaxHealth;
-        _maxDistance = levelMaxDistance;
-        _hasMaxDistance = levelHasMaxDistance;
+        _maxHealth = GameManager.Instance.CurrentLevel.healthQtt;
+        _maxDistance = GameManager.Instance.CurrentLevel.distance;
+        _hasMaxDistance = GameManager.Instance.CurrentLevel.distance > 0;
         SetHeartSprite(_maxHealth);
         _filledDistanceImage.gameObject.SetActive(_hasMaxDistance);
         _filledDistanceImage.fillAmount = 0;
@@ -69,9 +74,15 @@ public class GameplayUIManager : MonoBehaviour
         }
     }
 
+    private void ShowLevelClear(bool completed)
+    {
+        _levelClearScreen.InitPanel(_currentDistance, _powerUpCount, completed);
+    }
+
     public void UpdateDistance(float distance)
     {
-        _distanceText.text = distance/20 + " km";
+        _currentDistance = distance;
+        _distanceText.text = (distance/20).ToString("0.00") + " km";
         
         if (!_hasMaxDistance) return;
 
@@ -82,12 +93,23 @@ public class GameplayUIManager : MonoBehaviour
     private void ActivatePowerUp(bool status, GameManager.PowerUpType type)
     {
         _powerUpImage.sprite = _powerUpSprites[(int)type];
-        if(status)
+        if (status)
+        {
             _tweener = _powerUpImage.DOFade(0.5f, 0.2f).SetLoops(-1, LoopType.Yoyo);
+            _powerUpCount++;
+        }
         else
             _tweener.Kill();
         
         _powerUpImage.gameObject.SetActive(status);
+    }
+
+    private void OnDestroy()
+    {
+        GameManager.OnGetInvinciblePowerUp -= (status) => ActivatePowerUp(status, GameManager.PowerUpType.INVINCIBLE);
+        GameManager.OnGetSmallPowerUp -= (status) => ActivatePowerUp(status, GameManager.PowerUpType.SMALL_OBSTACLES);
+        GameManager.OnTakeDamage -= SetHeartSprite;
+        GameManager.OnFinishLevel -= ShowLevelClear;
     }
 }
 

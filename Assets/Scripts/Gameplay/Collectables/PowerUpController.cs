@@ -5,12 +5,12 @@ using UnityEngine.Serialization;
 
 public class PowerUpController : CollidableObjects
 {
-    [SerializeField] private GameManager.PowerUpType powerUpType;
-    [SerializeField] private float cooldown;
+    [SerializeField] private GameManager.PowerUpType _powerUpType;
+    [SerializeField] private float _cooldown;
 
     protected override void OnPlayerEnter()
     {
-        GameManager.Instance.ActivatePowerUp(powerUpType, cooldown);
+        GameManager.Instance.ActivatePowerUp(_powerUpType, _cooldown);
         Disable();
     }
 }

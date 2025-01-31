@@ -9,9 +9,9 @@ public class GameManager : Singleton<GameManager>
     
     [SerializeField] GameplayUIManager _uiManager;
     private float _powerUpTime;
-    [Range (0, 3)]
-    [SerializeField] private int _maxHealth;
-    [SerializeField] private float _levelMaxDistance;
+    protected override bool DestroyOnLoad => false;
+    
+    [SerializeField] private List<LevelSO> _levels;
     
     private float _powerUpCooldown;
 
@@ -24,10 +24,15 @@ public class GameManager : Singleton<GameManager>
     public bool IsPlaying => _isPlaying;
 
     private int _currentHealth;
+
+    [SerializeField] private LevelSO _currentLevel;
+    public LevelSO CurrentLevel => _currentLevel;
     
     public static event Action<bool> OnGetSmallPowerUp;
     public static event Action<bool> OnGetInvinciblePowerUp;
     public static event Action<int> OnTakeDamage;
+    
+    public static event Action<bool> OnFinishLevel;
     public enum PowerUpType
     {
         INVINCIBLE,
@@ -36,8 +41,9 @@ public class GameManager : Singleton<GameManager>
 
     private void Start()
     {
-        _uiManager.Init(_maxHealth, _levelMaxDistance);
-        _currentHealth = _maxHealth;
+        // _currentLevel = _levels[PlayerPrefs.GetInt(Constants.current_level, 0)];
+        _uiManager.Init();
+        _currentHealth = _currentLevel.healthQtt;
         Invoke(nameof(StartMatch), 2f);
     }
 
@@ -70,9 +76,9 @@ public class GameManager : Singleton<GameManager>
         {
              float distance = PlayerController.GetDistanceFromStart();
             _uiManager.UpdateDistance(distance);
-            if (distance >= _levelMaxDistance)
+            if (_currentLevel.distance > 0 && distance >= _currentLevel.distance)
             {
-                GameOver();
+                GameOver(true);
             }
         }
     }
@@ -95,11 +101,12 @@ public class GameManager : Singleton<GameManager>
         _currentHealth--;
         OnTakeDamage?.Invoke(_currentHealth);
         if(_currentHealth <= 0)
-            GameOver();
+            GameOver(false);
     }
 
-    public void GameOver()
+    public void GameOver(bool completed)
     {
         _isPlaying = false;
+        OnFinishLevel?.Invoke(completed);
     }
 }

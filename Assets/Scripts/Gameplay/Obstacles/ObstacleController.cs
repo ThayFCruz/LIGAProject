@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
@@ -32,5 +33,10 @@ public class ObstacleController : CollidableObjects
     {
         base.Disable();
         transform.localScale = defaultScale;
+    }
+
+    private void OnDestroy()
+    {
+        GameManager.OnGetSmallPowerUp -= SmallPowerUp;
     }
 }

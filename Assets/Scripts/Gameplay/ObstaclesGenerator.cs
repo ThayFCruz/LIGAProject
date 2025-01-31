@@ -15,7 +15,6 @@ public class ObstaclesGenerator : MonoBehaviour
     [Space] 
         
     [SerializeField] private float startPosition;
-    [SerializeField] private float spaceBetween;
 
     [Space]
     [Header("DistanceBased")] 
@@ -78,7 +77,7 @@ public class ObstaclesGenerator : MonoBehaviour
         _objectsQueue.Enqueue(obj);
         if (obj.TypeCO == TypeCollidableObject.POWER_UP)
             powerUpsCount++;
-        float newSpaceBetween = Random.Range(0, spaceBetween);
+        float newSpaceBetween = Random.Range(GameManager.Instance.CurrentLevel.distanceBetweenObjects-3, GameManager.Instance.CurrentLevel.distanceBetweenObjects);
         _nextToSpawnPosition += obj.SpaceAfter +  newSpaceBetween + typeDictionary[_nextToSpawnType].spaceBefore;
 
     }

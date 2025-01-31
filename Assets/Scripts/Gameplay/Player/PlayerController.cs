@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
@@ -16,10 +17,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private SpriteRenderer _spriteRenderer;
     [SerializeField] private Animator _animator;
     
-    
-    public float _regularSpeed = 5f;
-    public float _speedMultiplier = 2f;
-    public float _currentSpeed = 5f;
     public float _jumpForce = 400f;
     public float _bigSize = 1.5f;
     public float _regularSize = 0.6f;
@@ -39,7 +36,7 @@ public class PlayerController : MonoBehaviour
         GameManager.OnGetInvinciblePowerUp += OnGetInvinciblePowerUp;
         _playerRb = GetComponent<Rigidbody2D>();
         _playerRb.velocity = new Vector2(0, 0);
-        _currentSpeed = _regularSpeed;
+        _playerRb.gravityScale = GameManager.Instance.CurrentLevel.gravity;
         _initialPoint = transform.position.x;
     }
     
@@ -55,7 +52,7 @@ public class PlayerController : MonoBehaviour
             _animator.SetFloat("speed", 0); 
             return;
         }
-        _playerRb.velocity = new Vector2(_currentSpeed, _playerRb.velocity.y);
+        _playerRb.velocity = new Vector2(GameManager.Instance.CurrentLevel.speed, _playerRb.velocity.y);
         _animator.SetFloat("speed", _playerRb.velocity.x); 
         var position = transform.position;
         PosX = position.x;
@@ -130,5 +127,11 @@ public class PlayerController : MonoBehaviour
             _animator.SetBool("grounded", false);
             _onGround = false;
         }
+    }
+
+    private void OnDestroy()
+    {
+        GameManager.OnTakeDamage -= OnTakeDamage;
+        GameManager.OnGetInvinciblePowerUp -= OnGetInvinciblePowerUp;
     }
 }
