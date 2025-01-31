@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7673493252531534353}
   - component: {fileID: 7154543848516719618}
   - component: {fileID: 5438724370000752307}
+  - component: {fileID: 9106584054752457848}
   m_Layer: 0
   m_Name: SmallPU
   m_TagString: Untagged
@@ -27,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 5229974040516576751}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 43.02, y: -2.44, z: 0}
+  m_LocalPosition: {x: 43.02, y: 0, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -72,7 +73,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1205255017
-  m_SortingLayer: 3
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 7ae08857186afb04b81af93cb502595a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -97,5 +98,43 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b44785df2e207e4b9cab74b547a222b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 1
-  cooldown: 10
+  size: 0
+  spaceAfter: 0
+  obstacleType: 1
+  powerUpType: 1
+  cooldown: 4
+--- !u!58 &9106584054752457848
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5229974040516576751}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.25

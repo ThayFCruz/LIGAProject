@@ -27,4 +27,10 @@ public class ObstacleController : CollidableObjects
     {
         transform.DOScale(status ? smallScale : defaultScale, 0.1f);
     }
+
+    public virtual void Disable()
+    {
+        base.Disable();
+        transform.localScale = defaultScale;
+    }
 }

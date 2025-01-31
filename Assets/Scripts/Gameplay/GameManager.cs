@@ -17,7 +17,7 @@ public class GameManager : Singleton<GameManager>
 
     private bool _activatePowerUp;
     
-    private bool _isInvincible = false;
+    public bool _isInvincible = false;
     public bool IsInvincible => _isInvincible;
     
     private bool _isPlaying = false;

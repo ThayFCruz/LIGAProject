@@ -70,15 +70,15 @@ public class PlayerController : MonoBehaviour
             {
                 _tweenerInvincible = _spriteRenderer.DOFade(0.7f, 0.1f).SetLoops(-1, LoopType.Yoyo);
             });
-            _currentSpeed = _regularSpeed * _speedMultiplier;
+          //  _currentSpeed = _regularSpeed * _speedMultiplier;
             _playerRb.mass = 2f;
            
         }
         else
         {
-            PlayerTransform.DOScale(_regularSize, 0.5f);
+            PlayerTransform.DOScale(_regularSize, 0.1f);
             _spriteRenderer.DOFade(1, 0.5f);
-            _currentSpeed = _regularSpeed;
+          //  _currentSpeed = _regularSpeed;
             _tweenerInvincible.Kill();
             _playerRb.mass = 0.6f;
         }
@@ -103,7 +103,7 @@ public class PlayerController : MonoBehaviour
         if (!_onGround) return;
         //jump animation
         _playerRb.AddForce(Vector2.up * _jumpForce, ForceMode2D.Force);
-        _animator.SetTrigger("jump");
+        // _animator.SetTrigger("jump");
     }
 
     public void GameOver()
@@ -118,6 +118,7 @@ public class PlayerController : MonoBehaviour
     {
         if (col.gameObject.CompareTag("Ground"))
         {
+            _animator.SetBool("grounded", true);
             _onGround = true;
         }
     }
@@ -126,6 +127,7 @@ public class PlayerController : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Ground"))
         {
+            _animator.SetBool("grounded", false);
             _onGround = false;
         }
     }
