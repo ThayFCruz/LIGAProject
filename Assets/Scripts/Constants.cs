@@ -9,7 +9,6 @@ public class Constants
 
     public enum Levels
     {
-        SUPER_EASY,
         EASY,
         MEDIUM,
         HARD,

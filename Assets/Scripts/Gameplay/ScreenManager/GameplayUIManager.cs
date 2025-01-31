@@ -23,6 +23,7 @@ public class GameplayUIManager : MonoBehaviour
     private float _maxDistance;
     private float _currentDistance;
     private bool _hasMaxDistance;
+    [SerializeField] private Transform _distanceHolder;
     [SerializeField] private Image _filledDistanceImage;
     [SerializeField] private TextMeshProUGUI _distanceText;
     
@@ -55,7 +56,7 @@ public class GameplayUIManager : MonoBehaviour
         _maxDistance = GameManager.Instance.CurrentLevel.distance;
         _hasMaxDistance = GameManager.Instance.CurrentLevel.distance > 0;
         SetHeartSprite(_maxHealth);
-        _filledDistanceImage.gameObject.SetActive(_hasMaxDistance);
+        _distanceHolder.gameObject.SetActive(_hasMaxDistance);
         _filledDistanceImage.fillAmount = 0;
     }
 

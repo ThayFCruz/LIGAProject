@@ -28,17 +28,17 @@ public class LevelClearScreen : MonoBehaviour
         _nextLevelButton.onClick.AddListener(OnNextLevel);
         _homeButton.onClick.AddListener(OnHome);
         _replayButton.onClick.AddListener(OnReplay);
-        _nextLevelButton.gameObject.SetActive(GameManager.Instance.CurrentLevel.level != Constants.Levels.INFINITY);
     }
 
     public void InitPanel(float distance, int powerUps, bool completed)
     {
+        distance = distance/20;
         _currentDistance.text = distance.ToString("0.00") + " Km";
         _powerUpsQtt.text = powerUps.ToString();
         float record = PlayerPrefs.GetFloat(Constants.record + GameManager.Instance.CurrentLevel, 0);
         if (distance > record)
         {
-            PlayerPrefs.SetFloat(Constants.record + GameManager.Instance.CurrentLevel, distance);
+            PlayerPrefs.SetFloat(Constants.record + GameManager.Instance.CurrentLevel.level, distance);
             _record.text = distance.ToString("0.00") + " Km";
         }
         else
@@ -47,6 +47,7 @@ public class LevelClearScreen : MonoBehaviour
         }
         _level.text = GameManager.Instance.CurrentLevel.levelName;
         _congratulations.SetActive(completed);
+        _nextLevelButton.gameObject.SetActive(GameManager.Instance.CurrentLevel.level != Constants.Levels.INFINITY);
         _fail.SetActive(!completed);
         Invoke(nameof(ShowPanel),1f);
     }
@@ -59,7 +60,7 @@ public class LevelClearScreen : MonoBehaviour
 
     private void OnNextLevel()
     {
-        PlayerPrefs.SetInt("CurrentLevel",  (int)GameManager.Instance.CurrentLevel.level + 1);
+        PlayerPrefs.SetInt(Constants.current_level,  (int)GameManager.Instance.CurrentLevel.level + 1);
         OnReplay();
     }
 
@@ -70,6 +71,6 @@ public class LevelClearScreen : MonoBehaviour
 
     private void OnHome()
     {
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene("Menu");
     }
 }

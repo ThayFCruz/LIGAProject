@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40f1e405c8bec0c42a2bb207e8e5dfa0, type: 3}
   m_Name: Easy
   m_EditorClassIdentifier: 
-  level: 1
+  level: 0
   levelName: "F\xE1cil"
   distanceBetweenObjects: 5
   healthQtt: 1

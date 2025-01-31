@@ -25,7 +25,7 @@ public class GameManager : Singleton<GameManager>
 
     private int _currentHealth;
 
-    [SerializeField] private LevelSO _currentLevel;
+    private LevelSO _currentLevel;
     public LevelSO CurrentLevel => _currentLevel;
     
     public static event Action<bool> OnGetSmallPowerUp;
@@ -41,7 +41,7 @@ public class GameManager : Singleton<GameManager>
 
     private void Start()
     {
-        // _currentLevel = _levels[PlayerPrefs.GetInt(Constants.current_level, 0)];
+         _currentLevel = _levels[PlayerPrefs.GetInt(Constants.current_level, 0)];
         _uiManager.Init();
         _currentHealth = _currentLevel.healthQtt;
         Invoke(nameof(StartMatch), 2f);
