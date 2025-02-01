@@ -18,7 +18,7 @@ public class MenuScreen : MonoBehaviour
         _levelSelectPlatforms[_selectedLevel].SelectLevel(true);
         foreach (var level in _levelSelectPlatforms)
         {
-            level.SetActionOnSelect(OnSelectLevel);
+            level.SetActions(OnSelectLevel, OnClickPlay);
         }
 
         _playButton.onClick.AddListener(OnClickPlay);

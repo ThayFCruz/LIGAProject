@@ -38,8 +38,7 @@ public class GameplayUIManager : MonoBehaviour
     Tweener _tweener;
     private void Start()
     {
-        GameManager.OnGetInvinciblePowerUp += (status) => ActivatePowerUp(status, GameManager.PowerUpType.INVINCIBLE);
-        GameManager.OnGetSmallPowerUp += (status) => ActivatePowerUp(status, GameManager.PowerUpType.SMALL_OBSTACLES);
+        GameManager.OnGetPowerUp += ActivatePowerUp;
         GameManager.OnTakeDamage += SetHeartSprite;
         GameManager.OnFinishLevel += ShowLevelClear;
         _powerUpImage.gameObject.SetActive(false);
@@ -100,15 +99,14 @@ public class GameplayUIManager : MonoBehaviour
             _powerUpCount++;
         }
         else
-            _tweener.Kill();
+            _tweener.Pause();
         
         _powerUpImage.gameObject.SetActive(status);
     }
 
     private void OnDestroy()
     {
-        GameManager.OnGetInvinciblePowerUp -= (status) => ActivatePowerUp(status, GameManager.PowerUpType.INVINCIBLE);
-        GameManager.OnGetSmallPowerUp -= (status) => ActivatePowerUp(status, GameManager.PowerUpType.SMALL_OBSTACLES);
+        GameManager.OnGetPowerUp -= ActivatePowerUp;
         GameManager.OnTakeDamage -= SetHeartSprite;
         GameManager.OnFinishLevel -= ShowLevelClear;
     }

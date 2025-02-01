@@ -13,23 +13,27 @@ public class GameManager : Singleton<GameManager>
     
     [SerializeField] private List<LevelSO> _levels;
     
+    private int _currentHealth;
+
     private float _powerUpCooldown;
 
-    private bool _activatePowerUp;
+    private bool _smallPowerUpOn;
+    public bool IsSmallPowerUpOn => _smallPowerUpOn;
     
     public bool _isInvincible = false;
     public bool IsInvincible => _isInvincible;
     
+    
     private bool _isPlaying = false;
     public bool IsPlaying => _isPlaying;
-
-    private int _currentHealth;
+    
 
     private LevelSO _currentLevel;
     public LevelSO CurrentLevel => _currentLevel;
+
+    public bool HasPowerUpOn => _isInvincible || _smallPowerUpOn;
     
-    public static event Action<bool> OnGetSmallPowerUp;
-    public static event Action<bool> OnGetInvinciblePowerUp;
+    public static event Action<bool, PowerUpType> OnGetPowerUp;
     public static event Action<int> OnTakeDamage;
     
     public static event Action<bool> OnFinishLevel;
@@ -41,7 +45,7 @@ public class GameManager : Singleton<GameManager>
 
     private void Start()
     {
-         _currentLevel = _levels[PlayerPrefs.GetInt(Constants.current_level, 0)];
+        _currentLevel = _levels[PlayerPrefs.GetInt(Constants.current_level, 0)];
         _uiManager.Init();
         _currentHealth = _currentLevel.healthQtt;
         Invoke(nameof(StartMatch), 2f);
@@ -54,19 +58,19 @@ public class GameManager : Singleton<GameManager>
 
     private void Update()
     {
-        if(_isPlaying && _activatePowerUp) {
+        if(_isPlaying && HasPowerUpOn) {
             _powerUpCooldown -= Time.deltaTime;
             if (_powerUpCooldown <= 0)
             {
-                _activatePowerUp = false;
+                OnGetPowerUp?.Invoke(false, _isInvincible? PowerUpType.INVINCIBLE : PowerUpType.SMALL_OBSTACLES);
+                
                 if (_isInvincible)
                 {
                     _isInvincible = false;
-                    OnGetInvinciblePowerUp?.Invoke(false);
                 }
                 else
                 {
-                    OnGetSmallPowerUp?.Invoke(false);
+                    _smallPowerUpOn = false;
                 }
             }
             
@@ -84,14 +88,15 @@ public class GameManager : Singleton<GameManager>
     }
     public void ActivatePowerUp(PowerUpType type, float cooldown)
     {
-        _activatePowerUp = true;
+        OnGetPowerUp?.Invoke(true, type);
         if (type == PowerUpType.INVINCIBLE)
         {
             _isInvincible = true;
-            OnGetInvinciblePowerUp?.Invoke(true);
         }
         else
-            OnGetSmallPowerUp?.Invoke(true);
+        {
+            _smallPowerUpOn = true;
+        }
         _powerUpCooldown = cooldown;
     }
     

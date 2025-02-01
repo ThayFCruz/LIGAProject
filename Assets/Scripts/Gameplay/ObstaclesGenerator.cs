@@ -52,13 +52,15 @@ public class ObstaclesGenerator : MonoBehaviour
         {
             typeDictionary.Add(info.type, info);
         }
+        
         if (Camera.main != null) _cameraTr = Camera.main.transform;
+       
         _nextToSpawnPosition = _startPosition;
-
         _nextToSpawnType = TypeCollidableObject.OBSTACLE;
-        var lastBlock = typeDictionary[TypeCollidableObject.OBSTACLE].prefabs[0];
-        _oldestPos =  lastBlock.SpaceAfter + _startPosition;
+        _oldestPos =  typeDictionary[TypeCollidableObject.OBSTACLE].prefabs[0].SpaceAfter + _startPosition;
+        
         powerUpsCount = 0;
+        
         _spawning = true;
     }
     
@@ -69,8 +71,10 @@ public class ObstaclesGenerator : MonoBehaviour
         CollidableObjects obj = GetNextObject();
         obj.Set(_nextToSpawnPosition);
         _objectsQueue.Enqueue(obj);
+        
         if (obj.TypeCO == TypeCollidableObject.POWER_UP)
             powerUpsCount++;
+        
         float newSpaceBetween = Random.Range(GameManager.Instance.CurrentLevel.distanceBetweenObjects-3, GameManager.Instance.CurrentLevel.distanceBetweenObjects);
         _nextToSpawnPosition += obj.SpaceAfter +  newSpaceBetween + typeDictionary[_nextToSpawnType].spaceBefore;
 
@@ -87,7 +91,7 @@ public class ObstaclesGenerator : MonoBehaviour
             _pool.Add(obj);
         }
 
-        if (powerUpsCount <= 0)
+        if (powerUpsCount <= 1 && obj.TypeCO != TypeCollidableObject.POWER_UP && !GameManager.Instance.HasPowerUpOn)
         {
             float nextTypeChance = Random.Range(0, 1f);
             _nextToSpawnType = nextTypeChance < 0.97f ? TypeCollidableObject.OBSTACLE : TypeCollidableObject.POWER_UP;
@@ -103,7 +107,7 @@ public class ObstaclesGenerator : MonoBehaviour
     private void DeactivateOldestObject()
     {
         CollidableObjects obstacle =  _objectsQueue.Dequeue();
-        obstacle.Disable();
+        obstacle.Disable(true);
         if(obstacle.TypeCO == TypeCollidableObject.POWER_UP)
             powerUpsCount--;
         CollidableObjects lastBlock = _objectsQueue.Peek();

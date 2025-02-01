@@ -9,14 +9,15 @@ using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 using UnityEngine.UIElements;
 
-public class LevelSelectPlatform : MonoBehaviour, IPointerEnterHandler
+public class LevelSelectPlatform : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler
 {
     [SerializeField] private TextMeshProUGUI _levelName;
     [SerializeField] private TextMeshProUGUI _levelDistance;
     [SerializeField] private TextMeshProUGUI _maxDistance;
     [SerializeField] private LevelSO _levelSO;
 
-    private Action<int> action;
+    private Action<int> hoverAction;
+    private Action clickAction;
     
    
     void Start()
@@ -40,15 +41,20 @@ public class LevelSelectPlatform : MonoBehaviour, IPointerEnterHandler
         }
     }
 
-    public void SetActionOnSelect(Action<int> actionOnSelect)
+    public void SetActions(Action<int> actionOnSelect, Action actionOnClick)
     {
-        action = actionOnSelect;
+        hoverAction = actionOnSelect;
+        clickAction = actionOnClick;
     }
 
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        action?.Invoke((int)_levelSO.level);
+        hoverAction?.Invoke((int)_levelSO.level);
     }
-    
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        clickAction?.Invoke();
+    }
 }

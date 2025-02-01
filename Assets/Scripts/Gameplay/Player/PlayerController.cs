@@ -30,7 +30,7 @@ public class PlayerController : MonoBehaviour
     public void Start()
     {
         GameManager.OnTakeDamage += OnTakeDamage;
-        GameManager.OnGetInvinciblePowerUp += OnGetInvinciblePowerUp;
+        GameManager.OnGetPowerUp += OnGetPowerUp;
         _playerRb = GetComponent<Rigidbody2D>();
         _playerRb.velocity = new Vector2(0, 0);
         _playerRb.gravityScale = GameManager.Instance.CurrentLevel.gravity;
@@ -55,8 +55,9 @@ public class PlayerController : MonoBehaviour
         PosX = position.x;
     }
 
-    private void OnGetInvinciblePowerUp(bool isInvincible)
+    private void OnGetPowerUp(bool isInvincible, GameManager.PowerUpType type)
     {
+        if (type != GameManager.PowerUpType.INVINCIBLE) return;
         if (isInvincible)
         {
             transform.DOScale(_bigSize, 0.5f).OnComplete(() =>
@@ -128,6 +129,6 @@ public class PlayerController : MonoBehaviour
     private void OnDestroy()
     {
         GameManager.OnTakeDamage -= OnTakeDamage;
-        GameManager.OnGetInvinciblePowerUp -= OnGetInvinciblePowerUp;
+        GameManager.OnGetPowerUp -= OnGetPowerUp;
     }
 }

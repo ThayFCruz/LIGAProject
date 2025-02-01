@@ -3320,7 +3320,7 @@ MonoBehaviour:
     prefabs:
     - {fileID: 7899043325941975690, guid: a47914ca739bf654985a33b770f58a36, type: 3}
     - {fileID: 2544723113869610843, guid: 9478d4bb764c4ba499dcc7166654d4af, type: 3}
-    spaceBefore: 6
+    spaceBefore: 5
     container: {fileID: 1785103720}
   - type: 1
     prefabs:

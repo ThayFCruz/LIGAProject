@@ -8,9 +8,11 @@ public class ObstacleController : CollidableObjects
 {
     [SerializeField] private Vector2 smallScale;
     [SerializeField] private Vector2 defaultScale;
-    void Start()
+    
+    protected override void Enable()
     {
-        GameManager.OnGetSmallPowerUp += SmallPowerUp;
+        transform.localScale = GameManager.Instance.IsSmallPowerUpOn? smallScale : defaultScale;
+        base.Enable();
     }
 
     protected override void OnPlayerEnter()
@@ -24,19 +26,12 @@ public class ObstacleController : CollidableObjects
         GameManager.Instance.TakeDamage();
     }
 
-    private void SmallPowerUp(bool status)
+    protected override void OnGetPowerUp(bool status, GameManager.PowerUpType type)
     {
-        transform.DOScale(status ? smallScale : defaultScale, 0.1f);
+        if (type == GameManager.PowerUpType.SMALL_OBSTACLES)
+        {
+            transform.DOScale(status ? smallScale : defaultScale, 0.1f);
+        }
     }
-
-    public virtual void Disable()
-    {
-        base.Disable();
-        transform.localScale = defaultScale;
-    }
-
-    private void OnDestroy()
-    {
-        GameManager.OnGetSmallPowerUp -= SmallPowerUp;
-    }
+    
 }
