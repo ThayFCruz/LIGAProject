@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using TMPro;
+using Unity.Services.Analytics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -70,6 +71,7 @@ public class LevelClearScreen : MonoBehaviour
 
     private void OnReplay()
     {
+        AnalyticsManager.Instance.StartLevel(((Constants.Levels)PlayerPrefs.GetInt(Constants.current_level, 0)).ToString());
         SceneManager.LoadScene("GameplayScene");
     }
 
