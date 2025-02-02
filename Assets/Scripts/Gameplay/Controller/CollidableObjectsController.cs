@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-public abstract class CollidableObjects : MonoBehaviour
+public abstract class CollidableObjectsController : MonoBehaviour
 {
     [SerializeField] private float _spaceAfter;
     [SerializeField] private ObstaclesGenerator.TypeCollidableObject _obstacleType;

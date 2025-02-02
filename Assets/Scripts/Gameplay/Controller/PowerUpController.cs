@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-public class PowerUpController : CollidableObjects
+public class PowerUpController : CollidableObjectsController
 {
     [SerializeField] private GameManager.PowerUpType _powerUpType;
     [SerializeField] private float _cooldown;

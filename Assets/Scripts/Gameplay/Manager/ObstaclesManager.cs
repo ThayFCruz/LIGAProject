@@ -9,8 +9,8 @@ using Random = UnityEngine.Random;
 public class ObstaclesGenerator : MonoBehaviour
 {
 
-    Queue<CollidableObjects> _objectsQueue = new Queue<CollidableObjects>();
-    List<CollidableObjects> _pool = new List<CollidableObjects>();
+    Queue<CollidableObjectsController> _objectsQueue = new Queue<CollidableObjectsController>();
+    List<CollidableObjectsController> _pool = new List<CollidableObjectsController>();
     
     [SerializeField] private List<InformationsByType> _typeInformations;
     
@@ -34,7 +34,7 @@ public class ObstaclesGenerator : MonoBehaviour
     public struct InformationsByType
     {
         public TypeCollidableObject type;
-        public List<CollidableObjects> prefabs;
+        public List<CollidableObjectsController> prefabs;
         public float spaceBefore;
         public Transform container;
     }
@@ -64,7 +64,7 @@ public class ObstaclesGenerator : MonoBehaviour
 
         foreach (var pu in typeDictionary[TypeCollidableObject.POWER_UP].prefabs)
         {
-            CollidableObjects obj = Instantiate(pu, typeDictionary[TypeCollidableObject.POWER_UP].container);
+            CollidableObjectsController obj = Instantiate(pu, typeDictionary[TypeCollidableObject.POWER_UP].container);
             _pool.Add(obj);
             obj.Disable(true);
         }
@@ -79,7 +79,7 @@ public class ObstaclesGenerator : MonoBehaviour
 
     private void SpawnObject()
     {
-        CollidableObjects obj = GetNextObject();
+        CollidableObjectsController obj = GetNextObject();
         obj.Set(_nextToSpawnPosition);
         _objectsQueue.Enqueue(obj);
         
@@ -91,9 +91,9 @@ public class ObstaclesGenerator : MonoBehaviour
 
     }
 
-    private CollidableObjects GetNextObject()
+    private CollidableObjectsController GetNextObject()
     {
-        CollidableObjects obj = GetObjectFromPool();
+        CollidableObjectsController obj = GetObjectFromPool();
         
         if (obj ==null)
         {
@@ -115,9 +115,9 @@ public class ObstaclesGenerator : MonoBehaviour
         return obj;
     }
 
-    private CollidableObjects GetObjectFromPool()
+    private CollidableObjectsController GetObjectFromPool()
     {
-        List<CollidableObjects> objs = _pool.FindAll(x => x.TypeCO == _nextToSpawnType && !x.isActive);
+        List<CollidableObjectsController> objs = _pool.FindAll(x => x.TypeCO == _nextToSpawnType && !x.isActive);
         if(objs.Count == 0) return null;
         
         return objs[Random.Range(0, objs.Count)];
@@ -125,11 +125,11 @@ public class ObstaclesGenerator : MonoBehaviour
         
     private void DeactivateOldestObject()
     {
-        CollidableObjects obstacle =  _objectsQueue.Dequeue();
+        CollidableObjectsController obstacle =  _objectsQueue.Dequeue();
         obstacle.Disable(true);
         if(obstacle.TypeCO == TypeCollidableObject.POWER_UP)
             powerUpsCount--;
-        CollidableObjects lastBlock = _objectsQueue.Peek();
+        CollidableObjectsController lastBlock = _objectsQueue.Peek();
         _oldestPos = (lastBlock).Position + lastBlock.SpaceAfter;
     }
         

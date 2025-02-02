@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
 
-public class ObstacleController : CollidableObjects
+public class ObstacleController : CollidableObjectsController
 {
     [SerializeField] private Vector2 smallScale;
     [SerializeField] private Vector2 defaultScale;
