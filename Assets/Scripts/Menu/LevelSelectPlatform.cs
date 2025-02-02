@@ -35,11 +35,11 @@ public class LevelSelectPlatform : MonoBehaviour, IPointerEnterHandler, IPointer
     {
         if (status)
         {
-            transform.DOLocalMoveY(170f, 0.2f);
+            transform.DOLocalMoveY(340f, 0.2f);
         }
         else
         {
-            transform.DOLocalMoveY(0f, 0.2f);
+            transform.DOLocalMoveY(100f, 0.2f);
         }
     }
 
