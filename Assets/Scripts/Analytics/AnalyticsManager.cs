@@ -41,7 +41,7 @@ public class AnalyticsManager : Singleton<AnalyticsManager>
     public void CompletedLevel(string levelName)
     {
         if (!_initialized) return;
-        CustomEvent newEvent = new CustomEvent("fail_level")
+        CustomEvent newEvent = new CustomEvent("completed_level")
         {
             { "level_name", levelName },
         };
