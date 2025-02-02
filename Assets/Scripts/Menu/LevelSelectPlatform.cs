@@ -16,7 +16,7 @@ public class LevelSelectPlatform : MonoBehaviour, IPointerEnterHandler, IPointer
     [SerializeField] private TextMeshProUGUI _maxDistance;
     [SerializeField] private LevelSO _levelSO;
 
-    private Action<int> hoverAction;
+    private Action<Constants.Levels> hoverAction;
     private Action clickAction;
     
    
@@ -43,18 +43,18 @@ public class LevelSelectPlatform : MonoBehaviour, IPointerEnterHandler, IPointer
         }
     }
 
-    public void SetActions(Action<int> actionOnSelect)
+    public void SetActions(Action<Constants.Levels> actionOnSelect)
     {
         hoverAction = actionOnSelect;
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        hoverAction?.Invoke((int)_levelSO.level);
+        hoverAction?.Invoke(_levelSO.level);
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        hoverAction?.Invoke((int)_levelSO.level);
+        hoverAction?.Invoke(_levelSO.level);
     }
 }

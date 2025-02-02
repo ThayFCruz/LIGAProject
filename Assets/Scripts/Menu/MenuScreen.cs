@@ -12,12 +12,12 @@ public class MenuScreen : MonoBehaviour
     [SerializeField] private AudioClip _playSound;
     [SerializeField] private AudioClip _selectSound;
     [SerializeField] private AudioClip _menuMusic;
-    private int _selectedLevel = 0;
+    private Constants.Levels _selectedLevel;
 
     void Start()
     {
-        _selectedLevel = PlayerPrefs.GetInt(Constants.current_level, 0);
-        _levelSelectPlatforms[_selectedLevel].SelectLevel(true);
+        _selectedLevel = (Constants.Levels) PlayerPrefs.GetInt(Constants.current_level, 0);
+        _levelSelectPlatforms[(int)_selectedLevel].SelectLevel(true);
         foreach (var level in _levelSelectPlatforms)
         {
             level.SetActions(OnSelectLevel);
@@ -26,20 +26,21 @@ public class MenuScreen : MonoBehaviour
         _playButton.onClick.AddListener(OnClickPlay);
     }
 
-    private void OnSelectLevel(int level)
+    private void OnSelectLevel(Constants.Levels level)
     {
         _selectedLevel = level;
         SoundManager.PlayEffect(_selectSound);
         for (int i = 0; i < _levelSelectPlatforms.Count; i++)
         {
-            _levelSelectPlatforms[i].SelectLevel(i == level);
+            _levelSelectPlatforms[i].SelectLevel(i == (int)level);
         }
     }
 
     private void OnClickPlay()
     {
-        PlayerPrefs.SetInt(Constants.current_level, _selectedLevel);
+        PlayerPrefs.SetInt(Constants.current_level, (int)_selectedLevel);
         SoundManager.PlayEffect(_playSound);
+        AnalyticsManager.Instance.StartLevel(_selectedLevel.ToString());
         SceneManager.LoadScene("GameplayScene");
     }
 

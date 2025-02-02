@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Services.Analytics;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -16,6 +17,7 @@ public class GameManager : Singleton<GameManager>
     
     private int _currentHealth;
     private float _powerUpCooldown;
+    private float _currentDistance;
     
     private bool _smallPowerUpOn;
     public bool IsSmallPowerUpOn => _smallPowerUpOn;
@@ -79,9 +81,9 @@ public class GameManager : Singleton<GameManager>
 
         if (_isPlaying)
         {
-             float distance = PlayerController.GetDistanceFromStart();
-            _uiManager.UpdateDistance(distance);
-            if (_currentLevel.distance > 0 && distance >= _currentLevel.distance)
+             _currentDistance = PlayerController.GetDistanceFromStart();
+            _uiManager.UpdateDistance(_currentDistance);
+            if (_currentLevel.distance > 0 && _currentDistance >= _currentLevel.distance)
             {
                 GameOver(true);
             }
@@ -113,6 +115,14 @@ public class GameManager : Singleton<GameManager>
 
     public void GameOver(bool completed)
     {
+        if (completed)
+        {
+            AnalyticsManager.Instance.CompletedLevel(_currentLevel.level.ToString());
+        }
+        else
+        {
+            AnalyticsManager.Instance.FailLevel(_currentLevel.level.ToString(), _currentDistance);
+        }
         _isInvincible = completed;
         _audioSource.Stop();
         _isPlaying = false;
