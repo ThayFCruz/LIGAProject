@@ -9,7 +9,9 @@ public class MenuScreen : MonoBehaviour
 {
     [SerializeField] private List<LevelSelectPlatform> _levelSelectPlatforms = new List<LevelSelectPlatform>();
     [SerializeField] private Button _playButton;
-
+    [SerializeField] private AudioClip _playSound;
+    [SerializeField] private AudioClip _selectSound;
+    [SerializeField] private AudioClip _menuMusic;
     private int _selectedLevel = 0;
 
     void Start()
@@ -18,15 +20,16 @@ public class MenuScreen : MonoBehaviour
         _levelSelectPlatforms[_selectedLevel].SelectLevel(true);
         foreach (var level in _levelSelectPlatforms)
         {
-            level.SetActions(OnSelectLevel, OnClickPlay);
+            level.SetActions(OnSelectLevel);
         }
-
+        SoundManager.PlayMusic(_menuMusic, true);
         _playButton.onClick.AddListener(OnClickPlay);
     }
 
     private void OnSelectLevel(int level)
     {
         _selectedLevel = level;
+        SoundManager.PlayEffect(_selectSound);
         for (int i = 0; i < _levelSelectPlatforms.Count; i++)
         {
             _levelSelectPlatforms[i].SelectLevel(i == level);
@@ -36,6 +39,7 @@ public class MenuScreen : MonoBehaviour
     private void OnClickPlay()
     {
         PlayerPrefs.SetInt(Constants.current_level, _selectedLevel);
+        SoundManager.PlayEffect(_playSound);
         SceneManager.LoadScene("GameplayScene");
     }
 

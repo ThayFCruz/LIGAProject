@@ -15,6 +15,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private SpriteRenderer _spriteRenderer;
     [SerializeField] private Animator _animator;
     
+    [Header("Sounds")]
+    [SerializeField] private AudioClip _jumpSound;
+    [SerializeField] private AudioClip _crashSound;
+    [SerializeField] private AudioClip _deathSound;
+    
     public float _jumpForce = 400f;
     public float _bigSize = 1.5f;
     public float _regularSize = 0.6f;
@@ -22,10 +27,6 @@ public class PlayerController : MonoBehaviour
     private bool _onGround;
     
     Tweener _tweenerInvincible;
-    private void Awake()
-    {
-        PosX = 0;
-    }
 	
     public void Start()
     {
@@ -35,11 +36,12 @@ public class PlayerController : MonoBehaviour
         _playerRb.velocity = new Vector2(0, 0);
         _playerRb.gravityScale = GameManager.Instance.CurrentLevel.gravity;
         _initialPoint = transform.position.x;
+        PosX = _initialPoint;
     }
     
     public static float GetDistanceFromStart()
     {
-        return PosX - _initialPoint;
+        return (PosX - _initialPoint)/250;
     }
     
     public void FixedUpdate()
@@ -51,8 +53,7 @@ public class PlayerController : MonoBehaviour
         }
         _playerRb.velocity = new Vector2(GameManager.Instance.CurrentLevel.speed, _playerRb.velocity.y);
         _animator.SetFloat("speed", _playerRb.velocity.x); 
-        var position = transform.position;
-        PosX = position.x;
+        PosX = transform.position.x;
     }
 
     private void OnGetPowerUp(bool isInvincible, GameManager.PowerUpType type)
@@ -64,7 +65,6 @@ public class PlayerController : MonoBehaviour
             {
                 _tweenerInvincible = _spriteRenderer.DOFade(0.7f, 0.1f).SetLoops(-1, LoopType.Yoyo);
             });
-          //  _currentSpeed = _regularSpeed * _speedMultiplier;
             _playerRb.mass = 2f;
            
         }
@@ -72,7 +72,6 @@ public class PlayerController : MonoBehaviour
         {
             transform.DOScale(_regularSize, 0.1f);
             _spriteRenderer.DOFade(1, 0.5f);
-          //  _currentSpeed = _regularSpeed;
             _tweenerInvincible.Kill();
             _playerRb.mass = 0.6f;
         }
@@ -81,34 +80,33 @@ public class PlayerController : MonoBehaviour
 
     private void OnTakeDamage(int life)
     {
-        //damage animation
         if (life > 0)
         {
+            SoundManager.PlayEffect(_crashSound);
             _animator.SetTrigger("Crash");
         }
         else
         {
+            SoundManager.PlayEffect(_deathSound);
             GameOver();
         }
     }
 
     public void OnJump()
     {
-        if (!_onGround) return;
-        //jump animation
+        if (!_onGround || !GameManager.Instance.IsPlaying) return;
+        SoundManager.PlayEffect(_jumpSound);
         _playerRb.AddForce(Vector2.up * _jumpForce, ForceMode2D.Force);
-        // _animator.SetTrigger("jump");
     }
 
     public void GameOver()
     {
-        //dead animation
         _tweenerInvincible.Kill();
         _animator.SetTrigger("Dead");
         _playerRb.velocity = new Vector2(0, 0);
     }
 
-    private void OnCollisionStay2D(Collision2D col)
+    private void OnCollisionEnter2D(Collision2D col)
     {
         if (col.gameObject.CompareTag("Ground"))
         {

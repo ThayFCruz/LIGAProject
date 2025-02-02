@@ -896,3 +896,4 @@ MonoBehaviour:
   _levelDistance: {fileID: 8261962295074606326}
   _maxDistance: {fileID: 4028531896005004333}
   _levelSO: {fileID: 0}
+  _selectSound: {fileID: 8300000, guid: 9fc9da176b9f3194c8eae43d955c3b48, type: 3}

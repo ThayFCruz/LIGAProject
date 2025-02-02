@@ -102,6 +102,7 @@ MonoBehaviour:
   _obstacleType: 1
   _powerUpType: 1
   _cooldown: 7
+  _powerUpSound: {fileID: 8300000, guid: 7b0fedd3f5bfe6c4cbb8a2db4e4becac, type: 3}
 --- !u!58 &9106584054752457848
 CircleCollider2D:
   m_ObjectHideFlags: 0

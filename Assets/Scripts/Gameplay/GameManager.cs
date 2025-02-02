@@ -8,35 +8,33 @@ public class GameManager : Singleton<GameManager>
 {
     
     [SerializeField] GameplayUIManager _uiManager;
-    private float _powerUpTime;
-    protected override bool DestroyOnLoad => false;
-    
     [SerializeField] private List<LevelSO> _levels;
+    [SerializeField] private AudioClip _gameplayMusic;
+    [SerializeField] private AudioClip _startGameSOund;
+    [SerializeField] private AudioSource _audioSource;
+    [SerializeField] private AudioClip _powerUpSound;
     
     private int _currentHealth;
-
     private float _powerUpCooldown;
-
+    
     private bool _smallPowerUpOn;
     public bool IsSmallPowerUpOn => _smallPowerUpOn;
     
     public bool _isInvincible = false;
     public bool IsInvincible => _isInvincible;
     
-    
     private bool _isPlaying = false;
     public bool IsPlaying => _isPlaying;
     
-
+    public bool HasPowerUpOn => _isInvincible || _smallPowerUpOn;
+    
     private LevelSO _currentLevel;
     public LevelSO CurrentLevel => _currentLevel;
-
-    public bool HasPowerUpOn => _isInvincible || _smallPowerUpOn;
     
     public static event Action<bool, PowerUpType> OnGetPowerUp;
     public static event Action<int> OnTakeDamage;
-    
     public static event Action<bool> OnFinishLevel;
+    
     public enum PowerUpType
     {
         INVINCIBLE,
@@ -47,13 +45,16 @@ public class GameManager : Singleton<GameManager>
     {
         _currentLevel = _levels[PlayerPrefs.GetInt(Constants.current_level, 0)];
         _uiManager.Init();
-        _currentHealth = _currentLevel.healthQtt;
-        Invoke(nameof(StartMatch), 2f);
+        _currentHealth = _currentLevel.healthQtt; ;
+        SoundManager.PlayEffect(_startGameSOund);
+        Invoke(nameof(StartMatch), _startGameSOund.length);
+        SoundManager.PlayMusic(_gameplayMusic, true);
     }
 
     private void StartMatch()
     {
         _isPlaying = true;
+        _audioSource.Play();
     }
 
     private void Update()
@@ -89,6 +90,7 @@ public class GameManager : Singleton<GameManager>
     public void ActivatePowerUp(PowerUpType type, float cooldown)
     {
         OnGetPowerUp?.Invoke(true, type);
+        SoundManager.PlayEffect(_powerUpSound);
         if (type == PowerUpType.INVINCIBLE)
         {
             _isInvincible = true;
@@ -111,6 +113,8 @@ public class GameManager : Singleton<GameManager>
 
     public void GameOver(bool completed)
     {
+        _isInvincible = completed;
+        _audioSource.Stop();
         _isPlaying = false;
         OnFinishLevel?.Invoke(completed);
     }

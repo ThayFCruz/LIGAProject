@@ -21,7 +21,6 @@ public class ObstaclesGenerator : MonoBehaviour
     private Dictionary<TypeCollidableObject, InformationsByType> typeDictionary =
         new Dictionary<TypeCollidableObject, InformationsByType>();
     
-    private float[] _weights;
     private TypeCollidableObject _nextToSpawnType;
     private float _nextToSpawnPosition;
     private float _oldestPos;
@@ -48,20 +47,32 @@ public class ObstaclesGenerator : MonoBehaviour
 
     private void Start()
     {
+        InitialSettings();
+       
+        if (Camera.main != null) _cameraTr = Camera.main.transform;
+
+        GameManager.OnFinishLevel += (x) => { _spawning = false; };
+        _spawning = true;
+    }
+
+    private void InitialSettings()
+    {
         foreach (var info in _typeInformations)
         {
             typeDictionary.Add(info.type, info);
         }
+
+        foreach (var pu in typeDictionary[TypeCollidableObject.POWER_UP].prefabs)
+        {
+            CollidableObjects obj = Instantiate(pu, typeDictionary[TypeCollidableObject.POWER_UP].container);
+            _pool.Add(obj);
+            obj.Disable(true);
+        }
         
-        if (Camera.main != null) _cameraTr = Camera.main.transform;
-       
         _nextToSpawnPosition = _startPosition;
         _nextToSpawnType = TypeCollidableObject.OBSTACLE;
         _oldestPos =  typeDictionary[TypeCollidableObject.OBSTACLE].prefabs[0].SpaceAfter + _startPosition;
-        
         powerUpsCount = 0;
-        
-        _spawning = true;
     }
     
     
@@ -82,7 +93,7 @@ public class ObstaclesGenerator : MonoBehaviour
 
     private CollidableObjects GetNextObject()
     {
-        CollidableObjects obj = _pool.Find(x => x.TypeCO == _nextToSpawnType && !x.isActive);
+        CollidableObjects obj = GetObjectFromPool();
         
         if (obj ==null)
         {
@@ -91,7 +102,7 @@ public class ObstaclesGenerator : MonoBehaviour
             _pool.Add(obj);
         }
 
-        if (powerUpsCount <= 1 && obj.TypeCO != TypeCollidableObject.POWER_UP && !GameManager.Instance.HasPowerUpOn)
+        if (powerUpsCount <= 0 && obj.TypeCO != TypeCollidableObject.POWER_UP && !GameManager.Instance.HasPowerUpOn)
         {
             float nextTypeChance = Random.Range(0, 1f);
             _nextToSpawnType = nextTypeChance < 0.97f ? TypeCollidableObject.OBSTACLE : TypeCollidableObject.POWER_UP;
@@ -102,6 +113,14 @@ public class ObstaclesGenerator : MonoBehaviour
         }
         
         return obj;
+    }
+
+    private CollidableObjects GetObjectFromPool()
+    {
+        List<CollidableObjects> objs = _pool.FindAll(x => x.TypeCO == _nextToSpawnType && !x.isActive);
+        if(objs.Count == 0) return null;
+        
+        return objs[Random.Range(0, objs.Count)];
     }
         
     private void DeactivateOldestObject()

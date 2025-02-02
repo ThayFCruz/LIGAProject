@@ -8,18 +8,25 @@ public class ObstacleController : CollidableObjects
 {
     [SerializeField] private Vector2 smallScale;
     [SerializeField] private Vector2 defaultScale;
+    [SerializeField] private AudioClip destroySound;
+    private bool canCollide;
     
     protected override void Enable()
     {
         transform.localScale = GameManager.Instance.IsSmallPowerUpOn? smallScale : defaultScale;
         base.Enable();
+        canCollide = true;
     }
 
     protected override void OnPlayerEnter()
     {
+        if (!canCollide) return;
+        canCollide = false;
         if (GameManager.Instance.IsInvincible)
         {
-            Disable();
+            SoundManager.PlayEffect(destroySound);
+            transform.DOScale(new Vector3(transform.localScale.x, 0,transform.localScale.z), 0.2f).SetDelay(0.2f).OnComplete(() => Disable());
+
             return;
         }
         

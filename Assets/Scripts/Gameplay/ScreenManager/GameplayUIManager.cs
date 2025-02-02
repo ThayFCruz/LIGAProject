@@ -82,7 +82,7 @@ public class GameplayUIManager : MonoBehaviour
     public void UpdateDistance(float distance)
     {
         _currentDistance = distance;
-        _distanceText.text = (distance/20).ToString("0.00") + " km";
+        _distanceText.text = distance.ToString("0.00") + " km";
         
         if (!_hasMaxDistance) return;
 

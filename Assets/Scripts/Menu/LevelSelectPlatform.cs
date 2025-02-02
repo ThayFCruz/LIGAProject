@@ -26,27 +26,27 @@ public class LevelSelectPlatform : MonoBehaviour, IPointerEnterHandler, IPointer
         if (_levelSO.distance > 0)
         {
             _levelDistance.gameObject.SetActive(true);
-            _levelDistance.text = _levelSO.distance/20 + " Km";
+            _levelDistance.text = _levelSO.distance + " Km";
         }
         _maxDistance.text = PlayerPrefs.GetFloat(Constants.record +_levelSO.level).ToString("0.00") + " Km";
     }
 
     public void SelectLevel(bool status)
     {
-        if(status) 
+        if (status)
+        {
             transform.DOLocalMoveY(170f, 0.2f);
+        }
         else
         {
             transform.DOLocalMoveY(0f, 0.2f);
         }
     }
 
-    public void SetActions(Action<int> actionOnSelect, Action actionOnClick)
+    public void SetActions(Action<int> actionOnSelect)
     {
         hoverAction = actionOnSelect;
-        clickAction = actionOnClick;
     }
-
 
     public void OnPointerEnter(PointerEventData eventData)
     {
@@ -55,6 +55,6 @@ public class LevelSelectPlatform : MonoBehaviour, IPointerEnterHandler, IPointer
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        clickAction?.Invoke();
+        hoverAction?.Invoke((int)_levelSO.level);
     }
 }

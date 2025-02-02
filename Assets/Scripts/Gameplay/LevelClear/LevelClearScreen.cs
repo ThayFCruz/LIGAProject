@@ -9,8 +9,10 @@ using UnityEngine.UI;
 public class LevelClearScreen : MonoBehaviour
 {
     [SerializeField] private GameObject _congratulations;
+    [SerializeField] private AudioClip _congratulationsSound;
     [SerializeField] private GameObject _fail;
-
+    [SerializeField] private AudioClip _failSound;
+    
     [SerializeField] private TextMeshProUGUI _currentDistance;
     [SerializeField] private TextMeshProUGUI _powerUpsQtt;
     [SerializeField] private TextMeshProUGUI _record;
@@ -22,6 +24,7 @@ public class LevelClearScreen : MonoBehaviour
     
     [SerializeField] private Image _screen;
 
+    private bool _completed;
     
     void Start()
     {
@@ -32,10 +35,9 @@ public class LevelClearScreen : MonoBehaviour
 
     public void InitPanel(float distance, int powerUps, bool completed)
     {
-        distance = distance/20;
         _currentDistance.text = distance.ToString("0.00") + " Km";
         _powerUpsQtt.text = powerUps.ToString();
-        float record = PlayerPrefs.GetFloat(Constants.record + GameManager.Instance.CurrentLevel, 0);
+        float record = PlayerPrefs.GetFloat(Constants.record + GameManager.Instance.CurrentLevel.level, 0);
         if (distance > record)
         {
             PlayerPrefs.SetFloat(Constants.record + GameManager.Instance.CurrentLevel.level, distance);
@@ -43,17 +45,19 @@ public class LevelClearScreen : MonoBehaviour
         }
         else
         {
-            _record.text = record + " Km";
+            _record.text = record.ToString("0.00") + " Km";
         }
+        _completed = completed;
         _level.text = GameManager.Instance.CurrentLevel.levelName;
         _congratulations.SetActive(completed);
         _nextLevelButton.gameObject.SetActive(GameManager.Instance.CurrentLevel.level != Constants.Levels.INFINITY);
         _fail.SetActive(!completed);
-        Invoke(nameof(ShowPanel),1f);
+        Invoke(nameof(ShowPanel),completed? 0.2f:3f);
     }
 
     private void ShowPanel()
     {
+        SoundManager.PlayEffect(_completed ? _congratulationsSound : _failSound);
         _screen.GetComponent<CanvasGroup>().DOFade(1, 1f);
         _screen.gameObject.gameObject.SetActive(true);
     }

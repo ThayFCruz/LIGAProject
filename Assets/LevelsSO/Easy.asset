@@ -16,6 +16,6 @@ MonoBehaviour:
   levelName: "F\xE1cil"
   distanceBetweenObjects: 5
   healthQtt: 1
-  distance: 500
+  distance: 1
   gravity: 2.3
   speed: 7

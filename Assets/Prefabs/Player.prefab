@@ -95,7 +95,7 @@ SpriteRenderer:
   m_SortingLayerID: 2026562895
   m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 373269d273cb4804194fb100627c32db, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 02b7b2e30ff50334d9f500bb91552bba, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -155,9 +155,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _spriteRenderer: {fileID: 1204480479118323669}
   _animator: {fileID: 2229534301109084089}
-  _regularSpeed: 5
-  _speedMultiplier: 0.8
-  _currentSpeed: 5
+  _jumpSound: {fileID: 8300000, guid: 52cd1216863e8d1439e393aacd90fac2, type: 3}
+  _crashSound: {fileID: 8300000, guid: fd767fd39e0e378419472d5e5e171979, type: 3}
+  _deathSound: {fileID: 8300000, guid: 58a0cf3b16c10d144a33ce9ba4241378, type: 3}
   _jumpForce: 400
   _bigSize: 1.6
   _regularSize: 0.6
@@ -220,6 +220,6 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -1.3530216, y: 2.3820949}
-  m_Size: {x: 3.3824422, y: 4.2135015}
+  m_Offset: {x: -1.1322216, y: 2.3820949}
+  m_Size: {x: 3.962043, y: 4.2135015}
   m_Direction: 0
